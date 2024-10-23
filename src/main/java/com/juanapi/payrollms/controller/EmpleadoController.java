@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/empleados")
+@CrossOrigin(origins = "http://localhost:3000")
 public class EmpleadoController {
 
 
@@ -26,11 +27,6 @@ public class EmpleadoController {
         Empleado nuevoEmpleado = empleadoService.crearEmpleado(empleado);
 
         return ResponseEntity.ok(nuevoEmpleado);
-    }
-
-    @GetMapping(value = "get")
-    public String getConf(){
-        return "get recibido";
     }
 
 
