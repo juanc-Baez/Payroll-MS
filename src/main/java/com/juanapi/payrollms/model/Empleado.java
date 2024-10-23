@@ -47,6 +47,7 @@ public class Empleado {
     @Column
     private double bonificaciones;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EstadoEmpleado estado;
 
