@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/empleados")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -27,6 +29,25 @@ public class EmpleadoController {
         Empleado nuevoEmpleado = empleadoService.crearEmpleado(empleado);
 
         return ResponseEntity.ok(nuevoEmpleado);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Empleado> obtenerEmpleadoPorId(@PathVariable Long id) throws ResourceNotFoundException {
+        Empleado empleado = empleadoService.obtenerEmpleadoPorId(id);
+        return ResponseEntity.ok(empleado);
+    }
+
+    @GetMapping(value = "/apellido")
+    public ResponseEntity<Empleado> obtenerEmpleadoPorApellido(@RequestParam String apellido) throws ResourceNotFoundException {
+        Empleado empleado = empleadoService.obtenerEmpleadoPorApellido(apellido);
+        return ResponseEntity.ok(empleado);
+    }
+
+
+    @GetMapping(value = "/obtEmpleados")
+    public ResponseEntity<List<Empleado>> obtenerEmpleados(){
+        List<Empleado> empleados = empleadoService.obtenerEmpleados();
+        return ResponseEntity.ok(empleados);
     }
 
 
