@@ -24,6 +24,7 @@ public class EmpleadoController {
         this.empleadoService = empleadoService;
     }
 
+    //POST CREAR EMPLEADO
     @PostMapping(value = "/crear")
     public ResponseEntity<Empleado> crearEmpleado(@RequestBody Empleado empleado) {
         Empleado nuevoEmpleado = empleadoService.crearEmpleado(empleado);
@@ -31,6 +32,7 @@ public class EmpleadoController {
         return ResponseEntity.ok(nuevoEmpleado);
     }
 
+    //GET CONSULTA EMPLEADOS
     @GetMapping(value = "/{id}")
     public ResponseEntity<Empleado> obtenerEmpleadoPorId(@PathVariable Long id) throws ResourceNotFoundException {
         Empleado empleado = empleadoService.obtenerEmpleadoPorId(id);
@@ -43,12 +45,44 @@ public class EmpleadoController {
         return ResponseEntity.ok(empleado);
     }
 
-
     @GetMapping(value = "/obtEmpleados")
-    public ResponseEntity<List<Empleado>> obtenerEmpleados(){
+    public ResponseEntity<List<Empleado>> obtenerEmpleados() {
         List<Empleado> empleados = empleadoService.obtenerEmpleados();
         return ResponseEntity.ok(empleados);
     }
+
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Empleado> elimEmpleado(@PathVariable Long id) throws ResourceNotFoundException {
+        empleadoService.eliminarEmpleado(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

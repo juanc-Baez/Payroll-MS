@@ -13,7 +13,7 @@ import java.util.List;
 public class EmpleadoService {
 
 
-    private EmpleadoRepo empleadoRepo;
+    private final EmpleadoRepo empleadoRepo;
 
     @Autowired
     public EmpleadoService(EmpleadoRepo empleadoRepo) {
@@ -37,4 +37,11 @@ public class EmpleadoService {
     public List<Empleado> obtenerEmpleados() {
         return empleadoRepo.findAll();
     }
+
+    public void eliminarEmpleado(Long id) {
+        Empleado empleado = empleadoRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado con id" + id));
+        empleadoRepo.delete(empleado);
+    }
+
 }
