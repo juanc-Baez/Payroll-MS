@@ -26,7 +26,7 @@ public class EmpleadoController {
     }
 
     //POST CREAR EMPLEADO
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/crear")
     public ResponseEntity<Empleado> crearEmpleado(@RequestBody Empleado empleado) {
         Empleado nuevoEmpleado = empleadoService.crearEmpleado(empleado);
@@ -66,32 +66,6 @@ public class EmpleadoController {
         Empleado empleadoAct = empleadoService.actualizarEmpleado(id, empleadoDetalles);
         return ResponseEntity.ok(empleadoAct);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
