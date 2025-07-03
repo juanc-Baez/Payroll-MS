@@ -1,36 +1,89 @@
-Proyecto: Automatización en el Sistema de Gestión de Nómina  (En Proceso)
-Este proyecto tiene como objetivo automatizar el proceso de generación de recibos de pago, cálculo de nómina, y gestión de deducciones e impuestos, con el fin de simplificar y optimizar la administración de recursos humanos en una empresa.
 
-Descripción General
-Este sistema automatizado facilita las siguientes tareas:
+# Payroll-MS
 
-Generación y envío de recibos de pago a los empleados
-Cálculo automático de nómina, deducciones e impuestos
-CRUD de empleados para una gestión completa de la plantilla de trabajadores.
-Generación de reportes y consultas de historial de pagos y detalles de nómina.
-Funcionalidades Principales
-1. Generación de Recibos de Pago
-Programación automática para generar recibos de pago al final de cada período (mensual, quincenal, etc.).
-Envío automático de los recibos por correo electrónico a los empleados.
-2. Generación de Nómina
-Cálculo automatizado de la nómina para todos los empleados al final de cada mes.
-Actualización automática de los registros en la base de datos.
-3. Registro de Deducciones e Impuestos
-Implementación de reglas de negocio para el cálculo automático de deducciones e impuestos.
-Registro automático de estos valores para cada empleado en el sistema.
-Funcionalidades del Usuario
-1. CRUD de Empleados
-Crear, Leer, Actualizar y Eliminar empleados.
-Consultar detalles completos de los empleados y realizar ajustes en sus registros si es necesario.
-2. Revisar y Aprobar Nómina (Opcional)
-Proporciona la opción de que el usuario revise y apruebe manualmente la nómina antes de confirmar los pagos a los empleados.
-3. Generación Manual de Nómina
-Posibilidad de generar la nómina manualmente, si el proceso automático debe realizarse en otro momento.
-4. Reportes y Consultas
-Generar reportes detallados sobre la nómina, deducciones e impuestos.
-Consultar el historial de pagos y detalles específicos de la nómina de un empleado.
-Tecnologías Utilizadas
-Backend: Spring Boot con API RESTful
-Base de Datos: MySQL
-Frontend: (A definir, puede ser React, Angular, etc.)
-Envío de Emails: Integración con servicios de correo electrónico (por ejemplo, SMTP)
+**Payroll-MS** es un sistema de gestión de nómina automatizado desarrollado en Java con Spring Boot. Permite administrar empleados, calcular nóminas, gestionar deducciones e impuestos, y generar recibos de pago de manera eficiente y segura.
+
+## Características principales
+
+- **Gestión de empleados:** Alta, consulta, actualización y baja de empleados.
+- **Generación automática de nómina:** Cálculo de salarios, deducciones, impuestos y bonificaciones para todos los empleados.
+- **Recibos de pago:** Generación de recibos individuales por empleado y registro histórico.
+- **Seguridad:** Acceso protegido por roles (ADMIN, EMPLEADO, SUPERVISOR) usando Spring Security.
+- **API RESTful:** Endpoints para todas las operaciones principales.
+- **Manejo de errores:** Respuestas estructuradas y controladas ante errores y recursos no encontrados.
+
+## Arquitectura
+
+- **Backend:** Java 17, Spring Boot, Spring Data JPA, Spring Security
+- **Base de datos:** MySQL
+- **ORM:** JPA/Hibernate
+- **Gestión de dependencias:** Maven
+
+## Modelo de datos principal
+
+- **Empleado:** nombre, apellido, email, teléfono, fecha de contratación, salario base, horas extra, deducciones, impuestos, bonificaciones, estado, tipo de contrato.
+- **Nómina:** fecha de generación, lista de recibos de pago.
+- **Recibo:** salario total, deducciones, impuestos, fecha, referencia a empleado y nómina.
+- **Usuario y roles:** autenticación y autorización basada en roles.
+
+## Endpoints principales
+
+### Empleados (`/empleados`)
+- `POST /crear` (ADMIN): Crear empleado
+- `GET /{id}`: Consultar empleado por ID
+- `GET /apellido?apellido=...`: Consultar empleado por apellido
+- `GET /obtEmpleados`: Listar todos los empleados
+- `PUT /actualizar/{id}`: Actualizar empleado
+- `DELETE /{id}`: Eliminar empleado
+
+### Nómina (`/nominas`)
+- `POST /generar`: Generar nómina para todos los empleados
+
+### Seguridad y roles
+- Acceso a endpoints restringido según rol (ADMIN, EMPLEADO, SUPERVISOR)
+- Autenticación con usuario y contraseña (encriptada con BCrypt)
+
+## Configuración
+
+Editar `src/main/resources/application.properties` para los datos de conexión a MySQL:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/crudemp
+spring.datasource.username=root
+spring.datasource.password="password"
+```
+
+## Instalación y ejecución
+
+1. Clona el repositorio y accede al directorio del proyecto.
+2. Configura la base de datos MySQL y actualiza el archivo `application.properties`.
+3. Ejecuta:
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+4. La API estará disponible en `http://localhost:8080`
+
+## Pruebas
+
+Incluye pruebas unitarias y de integración con JUnit y Spring Boot Test. Para ejecutar:
+
+```bash
+./mvnw test
+```
+
+## Dependencias principales
+
+- spring-boot-starter-data-jpa
+- spring-boot-starter-security
+- spring-boot-starter-validation
+- spring-boot-starter-web
+- mysql-connector-j
+- lombok
+
+## Notas
+
+- El frontend no está incluido en este repositorio.
+- El sistema está preparado para integrarse con un frontend (por ejemplo, React) y servicios de correo electrónico.
+
+---
+Desarrollado por Juan Baez | 2024
