@@ -1,5 +1,6 @@
 package com.juanapi.payrollms.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.juanapi.payrollms.model.enums.EstadoEmpleado;
 import com.juanapi.payrollms.model.enums.TipoContrato;
 import jakarta.persistence.*;
@@ -30,6 +31,7 @@ public class Empleado {
     private String telefono;
 
     @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaContratacion;
 
     @Column(nullable = false)

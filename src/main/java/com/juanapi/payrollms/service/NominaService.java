@@ -1,6 +1,7 @@
 package com.juanapi.payrollms.service;
 
 
+import com.juanapi.payrollms.exception.ResourceNotFoundException;
 import com.juanapi.payrollms.model.Empleado;
 import com.juanapi.payrollms.model.Nomina;
 import com.juanapi.payrollms.model.Recibo;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NominaService {
@@ -86,6 +88,15 @@ public class NominaService {
         deducciones += empleado.getSalarioBase() * 0.02;
 
         return deducciones;
+    }
+
+    public Nomina obtenerNominaPorId(Long id) throws ResourceNotFoundException {
+        Optional<Nomina> nomina = nominaRepo.findById(id);
+        if (nomina.isPresent()) {
+            return nomina.get();
+        } else {
+            throw new ResourceNotFoundException("Nómina no encontrada con ID: " + id);
+        }
     }
 
 }

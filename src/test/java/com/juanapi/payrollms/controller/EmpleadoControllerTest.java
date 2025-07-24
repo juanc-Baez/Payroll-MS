@@ -2,22 +2,26 @@ package com.juanapi.payrollms.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.juanapi.payrollms.model.Empleado;
 import com.juanapi.payrollms.model.enums.EstadoEmpleado;
 import com.juanapi.payrollms.model.enums.TipoContrato;
 import com.juanapi.payrollms.service.EmpleadoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@WebMvcTest(controllers = EmpleadoController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class EmpleadoControllerTest {
 
     @Autowired
@@ -38,13 +42,14 @@ public class EmpleadoControllerTest {
         empleado.setEstado(EstadoEmpleado.ACTIVO);
         empleado.setTipoContrato(TipoContrato.PERMANENTE);
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
         mockMvc.perform(post("/empleados/crear")
                 .contentType("application/json")
-                .content(new ObjectMapper().writeValueAsString(empleado)))
+                .content(objectMapper.writeValueAsString(empleado))
+                .with(csrf()))
                 .andExpect(status().isOk());
 
     }
-
-
-
 }
