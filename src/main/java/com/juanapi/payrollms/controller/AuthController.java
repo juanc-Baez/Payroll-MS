@@ -1,20 +1,23 @@
 package com.juanapi.payrollms.controller;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.juanapi.payrollms.dto.AuthRequest;
 import com.juanapi.payrollms.dto.AuthResponse;
-import com.juanapi.payrollms.model.User;
+import com.juanapi.payrollms.dto.RegisterRequest;
 import com.juanapi.payrollms.service.JwtService;
 import com.juanapi.payrollms.service.UserService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/auth")
@@ -37,11 +40,33 @@ public class AuthController {
             new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
-        User user = userService.findByUsername(request.getUsername());
-        
-        String token = jwtService.generateToken(request.getUsername(), Map.of("roles", user.getRoles()));
+        UserDetails user = userService.findByUsername(request.getUsername());
+
+        // Asegura que los roles en el JWT tengan el prefijo 'ROLE_'
+        var roles = user.getAuthorities().stream()
+            .map(authority -> {
+                String auth = authority.getAuthority();
+                return auth.startsWith("ROLE_") ? auth : "ROLE_" + auth;
+            })
+            .toList();
+
+        var claims = new HashMap<String,Object>();
+        claims.put("roles", roles);
+        String token = jwtService.generateToken(user, claims);
 
         return ResponseEntity.ok(new AuthResponse(token));
-    
+    }
+
+    @PostMapping("/register")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+        var roles = request.getRoles() == null || request.getRoles().isEmpty()
+            ? java.util.Set.of("EMPLEADO")
+            : request.getRoles();
+        userService.createUser(request.getUsername(), request.getPassword(), roles);
+        UserDetails user = userService.findByUsername(request.getUsername());
+        var roleList = user.getAuthorities().stream().map(a -> a.getAuthority()).toList();
+        String token = jwtService.generateToken(user, java.util.Map.of("roles", roleList));
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 }

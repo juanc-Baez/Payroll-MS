@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,8 +17,10 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Entity
-@Table(name = "user")
+@Table(name = "app_user")
 public class User implements UserDetails {
+
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -32,7 +35,7 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -70,4 +73,11 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
+    // En caso de que el usuario sea un empleado
+    @OneToOne
+    @JoinColumn(name = "empleado_id", nullable = true, unique = true)
+    private Empleado empleado;
+
 }

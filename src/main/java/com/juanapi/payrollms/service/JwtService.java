@@ -1,11 +1,15 @@
+
 package com.juanapi.payrollms.service;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
@@ -33,12 +37,15 @@ public class JwtService {
         return secretKey;
     }
 
-    public String generateToken(String username, Map<String, Object> extraClaims) {
+    public String generateToken(UserDetails user, Map<String, Object> extraClaims) {
 
         Date expirationDate = new Date(System.currentTimeMillis() + EXPIRATION_MS);
+        extraClaims.put("roles", user.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList()));
         return Jwts.builder()
                 .claims(extraClaims)
-                .subject(username)
+                .subject(user.getUsername())
                 .issuedAt(new Date())
                 .signWith(getSecretKey())
                 .expiration(expirationDate)
@@ -73,6 +80,26 @@ public class JwtService {
             return jws.getPayload().getSubject(); // Extrae el subject(username) del token
         } catch (JwtException | IllegalArgumentException e) {
             return null;
+        }
+    }
+
+        // Extraer roles del token JWT
+    public java.util.List<String> extractRoles(String token) {
+        try {
+            Jws<Claims> jws = Jwts.parser()
+                    .verifyWith(getSecretKey())
+                    .build()
+                    .parseSignedClaims(token);
+            Object rolesObj = jws.getPayload().get("roles");
+            if (rolesObj instanceof java.util.List<?>) {
+                // Convertir a lista de strings
+                return ((java.util.List<?>) rolesObj).stream()
+                    .map(Object::toString)
+                    .toList();
+            }
+            return java.util.Collections.emptyList();
+        } catch (JwtException | IllegalArgumentException e) {
+            return java.util.Collections.emptyList();
         }
     }
 }

@@ -77,6 +77,11 @@ public class EmpleadoService {
         return emptyNames.toArray(result);
     }
 
+    public Empleado obtenerEmpleadoPorUsername(String username) {
+        return empleadoRepo.findByUserUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado con username: " + username));   
+    }
+
 
 
 

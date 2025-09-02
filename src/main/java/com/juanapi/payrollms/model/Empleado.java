@@ -57,4 +57,7 @@ public class Empleado {
     @Column(nullable = false)
     private TipoContrato tipoContrato;
 
+    @OneToOne
+    private User user;
+
 }

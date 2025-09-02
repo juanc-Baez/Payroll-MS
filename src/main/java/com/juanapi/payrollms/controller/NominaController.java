@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 @RestController
 @RequestMapping("/nominas")
 @CrossOrigin(origins = "http://localhost:3000")
+@PreAuthorize("hasRole('ADMIN') or hasRole('HR')")
 @Tag(name = "Nóminas", description = "API para la gestión de nóminas del sistema de payroll")
 public class NominaController {
 
@@ -34,6 +36,7 @@ public class NominaController {
         @ApiResponse(responseCode = "200", description = "Nómina generada exitosamente"),
         @ApiResponse(responseCode = "500", description = "Error interno del servidor al generar la nómina")
     })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('HR')")
     @PostMapping(value = "/generar")
     public ResponseEntity<Nomina> generarNomina() {
         Nomina nomina = nominaService.generarNomina();
@@ -46,6 +49,7 @@ public class NominaController {
         @ApiResponse(responseCode = "404", description = "Nómina no encontrada"),
         @ApiResponse(responseCode = "500", description = "Error al generar el PDF")
     })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('HR')")
     @GetMapping(value = "/{id}/pdf")
     public ResponseEntity<byte[]> descargarNominaPDF(@PathVariable Long id) {
         try {
@@ -73,6 +77,7 @@ public class NominaController {
         @ApiResponse(responseCode = "200", description = "Nómina generada y PDF descargado exitosamente"),
         @ApiResponse(responseCode = "500", description = "Error al generar la nómina o el PDF")
     })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('HR')")
     @PostMapping(value = "/generar-pdf")
     public ResponseEntity<byte[]> generarYDescargarNomina() {
         try {

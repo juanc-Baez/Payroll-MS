@@ -1,4 +1,9 @@
 package com.juanapi.payrollms.controller;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import com.juanapi.payrollms.model.User;
+
+
 
 
 import com.juanapi.payrollms.exception.ResourceNotFoundException;
@@ -113,5 +118,18 @@ public class EmpleadoController {
         throw new ResourceNotFoundException("Empleado no encontrado");
     }
 
+
+
+
+
+    @PreAuthorize("hasRole('EMPLEADO')")
+    @Operation(summary = "Obtener mi información de empleado", description = "Devuelve la información del empleado asociado al usuario autenticado")
+    @GetMapping("/mi-perfil")
+    public ResponseEntity<Empleado> obtenerMiPerfil() throws ResourceNotFoundException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Empleado empleado = empleadoService.obtenerEmpleadoPorUsername(username);
+        return ResponseEntity.ok(empleado);
+    }
 
 }
